@@ -1,0 +1,25 @@
+# This is Python 2
+import sys
+
+def gcd(a, b):
+    while b > 0:
+        a, b = b, a%b
+        
+    return a
+
+length = int(sys.stdin.readline())
+
+for i in xrange(length):
+    a, b = [num for num in sys.stdin.readline().strip().split("/")]
+    
+    a_decimal_p = a.split(".")
+    b_decimal_p = b.split(".")
+    
+    m = 10**len(a_decimal_p) if len(a_decimal_p) > len(b_decimal_p) else 10**len(b_decimal_p)
+    
+    a = int(float(a) * m)
+    b = int(float(b) * m)
+    
+    gcd_var = gcd(a, b)
+    
+    print str(int(float(a)/gcd_var)) + "/" + str(int(float(b)/gcd_var)) 

@@ -1,0 +1,67 @@
+# This is Python 2
+import sys
+
+line = sys.stdin.readline()
+l, k = [int(item) for item in line.strip().split(" ")]
+inp = [int(word) for word in sys.stdin.readline().strip().split(" ")]
+
+def getMedianIndexFromSorted(array):
+    return len(array)/2 if len(array)%2 == 1 else len(array)/2-1
+
+def selectPivot(inp):
+    inp = [pair for pair in enumerate(inp)]
+
+    medians = []
+
+    start = 0
+    end = 5
+    while end < len(inp):
+        sub_arr = sorted(inp[start:end], key=lambda x: x[1])
+        median_ind =getMedianIndexFromSorted(sub_arr)
+        medians.append(sub_arr[median_ind])
+
+        start = end
+        end = start + 5
+
+    if start < len(inp):
+        sub_arr = sorted(inp[start:len(inp)])
+        medians.append(sub_arr[getMedianIndexFromSorted(sub_arr)])
+        
+    medians.sort(key=lambda x: x[1])
+    
+    return medians[getMedianIndexFromSorted(medians)]
+
+def findKthLargestHelper(inp, k):
+    pivot_i, pivot = selectPivot(inp)
+
+    
+    inp[pivot_i], inp[0] = inp[0], inp[pivot_i]
+    
+    pivot_i = 0
+    
+    lower_i = pivot_i
+    i = pivot_i + 1
+
+    while i < len(inp):
+        if inp[i] <= inp[pivot_i]:
+            inp[i], inp[lower_i+1] = inp[lower_i+1], inp[i] 
+            lower_i += 1 
+        i += 1    
+
+    inp[pivot_i], inp[lower_i] = inp[lower_i], inp[pivot_i]
+    
+    pivot_i = lower_i
+    
+    #print k, pivot_i, inp[pivot_i]
+    #print inp
+    
+    kthOrderPivot = len(inp) - pivot_i
+
+    if kthOrderPivot == k:
+        return inp[pivot_i]
+    elif kthOrderPivot > k:
+        return findKthLargestHelper(inp[pivot_i+1:len(inp)], k)
+    else:
+        return findKthLargestHelper(inp[0:pivot_i], k - kthOrderPivot)
+    
+print findKthLargestHelper(inp, k)
